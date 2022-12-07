@@ -7,10 +7,10 @@ common=common.c
 all: AOC-challenge1
 
 AOC-challenge1:
--e 	$(CC) -o AOC$(Day) $(challenge1).c $(commonPath)/$(common)
+ 	$(CC) -o AOC $(Day) $(challenge1).c $(commonPath)/$(common)
 
 AOC-challenge2:
--e 	$(CC) -o AOC$(Day) $(challenge2).c $(commonPath)/$(common)
+ 	$(CC) -o AOC$(Day) $(challenge2).c $(commonPath)/$(common)
 
 clean:
--e 	rm *.o
+ 	rm *.o
