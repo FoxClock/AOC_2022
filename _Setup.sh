@@ -27,6 +27,10 @@ cd 'Day'$Day
 touch 'Day'$Day'.c'
 touch 'Day'$Day'-2.c'
 
+# Get puzzle input
+touch 'input.txt'
+curl --cookie "~/Downloads/cookies.txt"  "https://adventofcode.com/2022/day/"$Day"/input" >> input.txt
+
 # Put comments into file
 echo -e "// AUTHOR:\tHayden Foxwell" >> 'Day'$Day'.c'
 echo -e "// DATE:\t$date" >> 'Day'$Day'.c'
@@ -62,5 +66,4 @@ echo "clean:" >> $makefile
 echo -e "\t""rm *.o" >> $makefile
 
 # Create text files
-touch input.txt
 touch testInput.txt
