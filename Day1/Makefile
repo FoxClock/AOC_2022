@@ -1,4 +1,4 @@
-CC=CC
+CC=cc
 Day=1
 challenge1=Day$(Day)
 challenge2='Day$(Day)-2'

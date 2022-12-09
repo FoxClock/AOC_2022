@@ -5,6 +5,7 @@
 // Imports
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../Common/common.h"
 
@@ -23,23 +24,35 @@
 int main() {
 
     // Variables
-    char *string;
+    char *number = malloc(10 * sizeof(char));
     
     // Open file
     FILE *file = open_file(INPUT_FILE, "r");
-
-    // Allocate buffer memory
-    fseek(file, 0L, SEEK_END);
-    int sz = ftell(file);
-    rewind(file);
-
-    string = malloc(sz * sizeof(char));
-
-    // Read into file
-    fread(string, sz, 1, file);
-
-    printf("%s", string);
     
+    // Read a line from the file
+    while (fgets(number, sizeof(number), file) != NULL) {
+        
+        number = number - 2;
+        
+        printf("%s", number);
+    }
+
+    // Free memory
+    free(number);
     fclose(file);
     return 1;
+}
+
+void printStrings(char *contents) {
+    char* number = NULL;
+    number = strtok(contents, "\n");
+
+    while (number != NULL)
+    {
+        printf("%s\t", number);
+        number = strtok(NULL, "\n");
+        printf(
+            "size: %ld\n", sizeof(number)
+        );
+    }
 }

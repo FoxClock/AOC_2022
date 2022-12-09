@@ -33,7 +33,7 @@ FILE* open_file(char* filepath, char* mode) {
     return file;
 }
 
-void get_string_contents(FILE *input_file, char *string_output) {
+char  *get_string_contents(FILE *input_file) {
     // Find size of file
     fseek(input_file, 0L, SEEK_END);
     int sz = ftell(input_file);
@@ -43,7 +43,7 @@ void get_string_contents(FILE *input_file, char *string_output) {
     char *file_contents = malloc(sz * sizeof(char));
 
     // Read file into array
-    fread(input_file, sz, 1, file_contents);
+    fread(file_contents, sz, 1, input_file);
 
-    strcpy()
+    return file_contents;
 }

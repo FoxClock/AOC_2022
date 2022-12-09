@@ -9,4 +9,4 @@
 
 // Function Definitions
 FILE* open_file(char* filepath, char* mode);
-
+char  *get_string_contents(FILE *input_file);
