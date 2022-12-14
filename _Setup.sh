@@ -32,12 +32,12 @@ touch 'input.txt'
 curl --cookie "~/Downloads/cookies.txt"  "https://adventofcode.com/2022/day/"$Day"/input" >> input.txt
 
 # Put comments into file
-echo -e "// AUTHOR:\tHayden Foxwell" >> 'Day'$Day'.c'
-echo -e "// DATE:\t$date" >> 'Day'$Day'.c'
-echo -e "// PURPOSE:\tDay $Day -" >> 'Day'$Day'.c'
-echo -e "// AUTHOR:\tHayden Foxwell" >> 'Day'$Day'-2.c'
-echo -e "// DATE:\t$date" >> 'Day'$Day'-2.c'
-echo -e "// PURPOSE:\tDay $Day -" >> 'Day'$Day'-2.c'
+echo "// AUTHOR:\tHayden Foxwell" >> 'Day'$Day'.c'
+echo "// DATE:\t$date" >> 'Day'$Day'.c'
+echo "// PURPOSE:\tDay $Day -" >> 'Day'$Day'.c'
+echo "// AUTHOR:\tHayden Foxwell" >> 'Day'$Day'-2.c'
+echo "// DATE:\t$date" >> 'Day'$Day'-2.c'
+echo "// PURPOSE:\tDay $Day -" >> 'Day'$Day'-2.c'
 
 
 # Setup makefile
@@ -55,15 +55,15 @@ echo "all: AOC-challenge1" >> $makefile
 echo "" >> $makefile
 
 echo "AOC-challenge1:" >> $makefile 
-echo -e "\t"'$(CC) -o AOC$(Day) $(challenge1).c $(commonPath)/$(common)' >> $makefile
+echo "\t"'$(CC) -o AOC$(Day) $(challenge1).c $(commonPath)/$(common)' >> $makefile
 echo "" >> $makefile
 
 echo "AOC-challenge2:" >> $makefile
-echo -e "\t"'$(CC) -o AOC$(Day) $(challenge2).c $(commonPath)/$(common)' >> $makefile
+echo "\t"'$(CC) -o AOC$(Day) $(challenge2).c $(commonPath)/$(common)' >> $makefile
 echo "" >> $makefile
 
 echo "clean:" >> $makefile
-echo -e "\t""rm *.o" >> $makefile
+echo "\t""rm *.o" >> $makefile
 
 # Create text files
 touch testInput.txt
