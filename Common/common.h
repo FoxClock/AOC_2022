@@ -19,3 +19,5 @@ struct File
 FILE* open_file(char* filepath, char* mode);
 char  *get_string_contents(FILE *input_file);
 size_t reallocate_array(int **starting_array, size_t inital_size, size_t amount);
+void printVals(int array[], size_t length);
+void bubbleSort(int array[], int size);

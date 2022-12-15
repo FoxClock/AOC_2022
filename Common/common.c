@@ -14,23 +14,20 @@
 
 ///
 /// Opens a file and returns a file pointer
-FILE* open_file(char* filepath, char* mode) {
-    FILE *file;
+// Opens a file of given file name/path
+FILE* getfile(char *fileName)
+{
+    // open file
+    FILE *fptr = fopen(fileName, "r");
 
-    // Check that filepath is not empty
-    if (!filepath) {
-        printf("Error, No input file Specified.\n");
-    }
-
-    // Open file from filepath
-    file = fopen(filepath, mode);
-
-    if (!file) {
-        printf("Error, could not open File: %s \n", filepath);
+    if (!fptr)
+    {
+        printf("Error reading file!");
+        getchar();
         exit(1);
     }
 
-    return file;
+    return fptr;
 }
 
 char  *get_string_contents(FILE *input_file) {
@@ -74,4 +71,38 @@ size_t reallocate_array(int **starting_array, size_t inital_size, size_t amount)
 
     printf("new size = %zu\n", sizeof(starting_array));
     return new_size;
+}
+
+
+// Print the contents of an array
+void printVals(int array[], size_t length)
+{
+    for (size_t j = 0; j < length; ++j)
+    {
+        printf("Item %zu:\t%i\n", j, array[j]);
+    }
+}
+
+
+// Bubble sort values
+// Sorts the integer values in an array
+void bubbleSort(int array[], int size) {
+  // loop to access each array element
+  for (int step = 0; step < size - 1; ++step) {
+      
+    // loop to compare array elements
+    for (int i = 0; i < size - step - 1; ++i) {
+      
+      // compare two adjacent elements
+      // change > to < to sort in descending order
+      if (array[i] < array[i + 1]) {
+        
+        // swapping occurs if elements
+        // are not in the intended order
+        int temp = array[i];
+        array[i] = array[i + 1];
+        array[i + 1] = temp;
+      }
+    }
+  }
 }

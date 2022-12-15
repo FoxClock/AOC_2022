@@ -14,7 +14,7 @@
 
 
 // Defines
-#if (1)
+#if (0)
     #define INPUT_FILE "testInput.txt"
 #else
     #define INPUT_FILE "input.txt"
@@ -22,26 +22,25 @@
 
 // buffer size
 #define BUFFSIZE 10 * sizeof(char)
-#define ARRSIZE 100
+#define ARRSIZE 400
 
 
 /* Function definitions */
-void bubbleSort(int arr[], int n);
-void swap(int* xp, int* yp);
+void bubbleSort(int array[], int size);
 
 
 /* Main function */
-
 int main() {
 
     // Variables
     char *number = malloc(BUFFSIZE);
+    size_t arr_size = ARRSIZE * sizeof(int);
     int total = 0, count = 0;
-    int *cal_list;
+    int *cal_list = malloc(arr_size);
 
-    // Set memory location to value
-    cal_list = (int*) malloc(ARRSIZE * sizeof(int));
-    cal_list = (int*) memset(cal_list, 0, ARRSIZE * sizeof(int));
+    // Allocate heap memory for cal_list
+    cal_list = memset(cal_list, 0, arr_size);
+
 
     // Open file
     FILE *file = open_file(INPUT_FILE, "r");
@@ -53,7 +52,6 @@ int main() {
             int value = atoi(number);
             if (value)
             {
-                printf("Value:\t%i\n", value);
                 total = total + value;
                 value =  0; 
             } else {
@@ -64,8 +62,17 @@ int main() {
 
     }
 
+    cal_list[count + 1] = total;
+    total = 0;
+
+    for (int i = 0; i < count; ++i) {
+        printf("Total-%i:\t%i\n", i, cal_list[i]);
+    }
+
     // Sort the array first
-    bubbleSort(cal_list, sizeof(*cal_list) / sizeof(cal_list[0]));
+    size_t cal_len = ARRSIZE;              // This is the size of the array
+    printf("Cal_len:\t%zu\n", cal_len);
+    bubbleSort(cal_list, cal_len);
     
     // Sum first 3 items
     total = 0;
@@ -82,22 +89,4 @@ int main() {
     free(number);
     fclose(file);
     return 1;
-}
-
-void bubbleSort(int arr[], int n)
-{
-    int i, j;
-    for (i = 0; i < n - 1; i++)
- 
-        // Last i elements are already in place
-        for (j = 0; j > n - i - 1; j++)
-            if (arr[j] < arr[j + 1])
-                swap(&arr[j], &arr[j + 1]);
-}
-
-void swap(int* xp, int* yp)
-{
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
 }
