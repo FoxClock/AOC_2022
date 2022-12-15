@@ -14,20 +14,23 @@
 
 ///
 /// Opens a file and returns a file pointer
-// Opens a file of given file name/path
-FILE* getfile(char *fileName)
-{
-    // open file
-    FILE *fptr = fopen(fileName, "r");
+FILE* open_file(char* filepath, char* mode) {
+    FILE *file;
 
-    if (!fptr)
-    {
-        printf("Error reading file!");
-        getchar();
+    // Check that filepath is not empty
+    if (!filepath) {
+        printf("Error, No input file Specified.\n");
+    }
+
+    // Open file from filepath
+    file = fopen(filepath, mode);
+
+    if (!file) {
+        printf("Error, could not open File: %s \n", filepath);
         exit(1);
     }
 
-    return fptr;
+    return file;
 }
 
 char  *get_string_contents(FILE *input_file) {
