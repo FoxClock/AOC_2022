@@ -66,28 +66,20 @@ void plays(char line[], char output[], size_t line_length, size_t output_length)
 {
     // Variables
     int count = 0, play = 0;        // Counter for line & play for play output
-
     while (count < (int)line_length)
     {
-        printf("count: %i\n",count);    // Debug: print out count
-        
-        /* 
-            If special character, such as terminator or newline
-            return function, to save checking remainder of buffer 
-        */
-        if (isspecial(line[count]))
-        {
-            return;
-        }
-
         // If current character is a space then skip character
         if (isspace(line[count]))
         {
+            // if newline character, end function
+            if (line[count] == '\n')
+            {
+                return;
+            }
+            // If space character, skip character
             count++;
             continue;
         }
-
-
         // if character is ascii character, then add to output array
         if (isascii(line[count]))
         {
@@ -98,7 +90,6 @@ void plays(char line[], char output[], size_t line_length, size_t output_length)
                 play++;
             }
         }
-        
         // Increment character in line.
         count++;
     }
