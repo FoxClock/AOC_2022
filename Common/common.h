@@ -7,6 +7,15 @@
 
 // Defines
 
+// Structs
+/* Could be used to track a file for input */
+struct File
+{
+    /* data */
+} File;
+
+
 // Function Definitions
 FILE* open_file(char* filepath, char* mode);
 char  *get_string_contents(FILE *input_file);
+size_t reallocate_array(int **starting_array, size_t inital_size, size_t amount);

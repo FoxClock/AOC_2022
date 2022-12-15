@@ -47,3 +47,31 @@ char  *get_string_contents(FILE *input_file) {
 
     return file_contents;
 }
+
+/* Reallocate an array to a particular size */
+
+/*
+    Reallocates the size of an array
+    inputs:
+        int **starting_array: double pointer to the starting array, allows for in-place change 
+        so original passed address is reassigned
+
+        size_t inital_size: Inital size of the array
+
+        size_t amount: the amount to resize by, this needs to be specified in terms of the data 
+            to resize with, ie; size_of(int)
+
+    returns:
+    size_t new size of array
+*/
+size_t reallocate_array(int **starting_array, size_t inital_size, size_t amount) {
+    
+    // Calculate size to make array
+    size_t new_size = inital_size + amount;
+
+    // Reallocate the array to the new size
+    *starting_array = (int*) realloc(*starting_array, new_size);
+
+    printf("new size = %zu\n", sizeof(starting_array));
+    return new_size;
+}
