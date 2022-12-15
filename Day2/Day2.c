@@ -33,31 +33,49 @@ void plays(char line[], char output[], size_t line_length, size_t output_length)
 int main(void)
 {
     // Variables
-    FILE *fptr = open_file(INPUT_FILE, "r");
-    char *line = malloc(LINE_BUFFER * sizeof(char));
+    FILE *fptr = open_file(INPUT_FILE, "r");             // input file
+    char *line = malloc(LINE_BUFFER * sizeof(char));    // line from text file
+    char *moves = malloc(2 * sizeof(char));             // Two moves from line
+    int *games = malloc(1 * sizeof(int));               // Each games total score
+    int move_value = 0, game_result_value = 0;          // A move, a game result
+    int sum = 0;                                        // Sum total of all games
     
     // Print file contents
+    int count = 0;
     while (fgets(line, LINE_BUFFER, fptr))
     {
-        char *moves = malloc(2 * sizeof(char));
         // Extract player's choices
         plays(line, moves, LINE_BUFFER, 2 * sizeof(char));
 
         printf("Play 1:'%c' \t Play2:'%c' \n", moves[0], moves[1]);
+        
         // Compare game for result
+        game_result_value = game_val(moves[0], moves[1]);
 
         // Calculate our rps score
         // (rock - 1, paper - 2, scissors -3)
+        move_value = play_val(moves[1]);
 
         // sum results and store in list
-
-        free(moves);
+        games = realloc(games, ((size_t)count + 1) * sizeof(games[0]));
+        int game_sum = game_result_value + move_value;
+        *(games + count) = game_sum;
+        
+        count++;
     }
 
     // total from list
+    for (int i = 0; i < count; i++)
+    {
+       sum = sum + *(games + i);
+    }
     
     // print total
+    printf("Total sum: %i\n", sum);;;;;
 
+    // Free memory
+    free(games);
+    free(moves);
     free(line);
     return 0;
 }
@@ -85,7 +103,6 @@ void plays(char line[], char output[], size_t line_length, size_t output_length)
         {
             if (play < (int)output_length)
             {
-                printf("current index item: %c\n", line[count]);
                 output[play] = line[count];
                 play++;
             }
