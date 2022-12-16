@@ -4,6 +4,8 @@
 // AUTHOR:	Hayden Foxwell
 // DATE:	14-12-2022
 // PURPOSE:	Day 2 -
+//          Find the play to make so that the rock paper scissors looks as follows
+//          (X Lose game)(Y Draw game)(Z Win Game)
 
 // Imports
 #include <stdio.h>
@@ -15,7 +17,7 @@
 
 
 // Defines
-#if (0)
+#if (1)
     #define INPUT_FILE "testInput.txt"
 #else
     #define INPUT_FILE "input.txt"
@@ -29,6 +31,8 @@
 int play_val(char play);
 int game_val(char player1, char player2);
 void plays(char line[], char output[], size_t line_length, size_t output_length);
+char game_state(char player1, char player2);
+int calc_play(const char player1, int offset);
 // ==================== //
 
 
@@ -52,12 +56,17 @@ int main(void)
 
         printf("Play 1:'%c' \t Play2:'%c' \n", moves[0], moves[1]);
         
+        // Change our move based on if we should win, lose or tie
+        moves[1] = game_state(moves[0], moves[1]);
+
         // Compare game for result
         game_result_value = game_val(moves[0], moves[1]);
 
         // Calculate our rps score
         // (rock - 1, paper - 2, scissors -3)
         move_value = play_val(moves[1]);
+
+        printf("GameVal: %i\tMoveVal: %i\n",game_result_value, move_value);
 
         // sum results and store in list
         games = realloc(games, ((size_t)count + 1) * sizeof(games[0]));
@@ -70,7 +79,7 @@ int main(void)
     // total from list
     for (int i = 0; i < count; i++)
     {
-       sum = sum + *(games + i);
+        sum = sum + *(games + i);
     }
     
     // print total
@@ -166,4 +175,65 @@ int game_val(char player1, char player2)
     // If no matches are found print error and return -1
     printf("WARNING Game not graded: P1(%c) -- P2(%c)\n", player1, player2);
     return -1;
+}
+
+// Game state
+// Calculate if we need to win, lose or tie a game
+// Returns the char corresponding with the move to make
+// Which will overwrite player2 value, then grade game as normal
+char game_state(char player1, char player2)
+{
+    // Constants
+    const char lose = 'X', tie = 'Y', win = 'Z';              // What player two intial value means
+    const char p1Rock = 'A', p1Paper = 'B', p1Scissors = 'C'; // What player one moves mean
+
+    // Variables
+    char output;
+    int offset = 0;
+
+    // If player is to lose, offset their moves by neg 1
+    // (rock -> scissors)(paper -> rock)(scissors -> paper)
+    if (player2 == lose) 
+    {
+        offset = -1;
+    }
+
+    // If player is to win, offset moves by plus 1
+    // (rock -> paper)(paper -> scissors)(scissors -> rock)
+    if (player2 == win)
+    {
+        offset = 1;
+    }
+
+    // If tie is to be had, offset is left at 0, so returned character 
+    // will be the same as player 1's played charater.
+    output = (char) ('X' + calc_play(player1, offset));
+
+    return output;
+}
+
+int calc_play(const char player1, int offset)
+{
+    // variables
+    int player1_value = player1 - 'A';          // 0 register player 1's game
+    int player2_value = player1_value + offset; // set player 2 to player1s register and the offset
+
+    /* 
+        Wrap the values around
+        so that values larger than 2 become 0
+        and values smaller than 0 become 2
+    */
+    // Wrap if smaller than 0
+    if (player2_value < 0)
+    {
+        player2_value = 2;
+    }
+
+    // Wrap if greater than 2
+    if (player2_value > 2)
+    {
+        player2_value = 0;
+    }
+
+    return player2_value;
 }
