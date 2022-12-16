@@ -17,6 +17,12 @@ date=`date +"%d-%m-%Y"`
 echo "enter Day number to setup:\t"
 read Day
 
+echo "enter session cookie"
+read session
+
+# Create list of days
+declare -a listofdays=("Day$Day.c" "Day$Day-2.c")
+
 # makes the directory
 mkdir -p 'Day'$Day
 
@@ -24,46 +30,69 @@ mkdir -p 'Day'$Day
 cd 'Day'$Day
 
 # Create c files
-touch 'Day'$Day'.c'
-touch 'Day'$Day'-2.c'
+for i in "${listofdays[@]}"
+do
+    touch "$i"
+
+    # Put comments, common imports, and common #defines 
+    # at the top of the C files
+
+    echo '
+    // AUTHOR:	Hayden Foxwell
+    // DATE:	16-12-2022
+    // PURPOSE:	Day 3 -
+    // Imports
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+
+    #include "../Common/common.h"
+
+
+    // Defines
+    #if (1)
+        #define INPUT_FILE "testInput.txt"
+    #else
+        #define INPUT_FILE "input.txt"
+    #endif
+    ' >> "$i"
+done
 
 # Get puzzle input
 touch 'input.txt'
-curl --cookie "~/Downloads/cookies.txt"  "https://adventofcode.com/2022/day/"$Day"/input" >> input.txt
-
-# Put comments into file
-echo "// AUTHOR:\tHayden Foxwell" >> 'Day'$Day'.c'
-echo "// DATE:\t$date" >> 'Day'$Day'.c'
-echo "// PURPOSE:\tDay $Day -" >> 'Day'$Day'.c'
-echo "// AUTHOR:\tHayden Foxwell" >> 'Day'$Day'-2.c'
-echo "// DATE:\t$date" >> 'Day'$Day'-2.c'
-echo "// PURPOSE:\tDay $Day -" >> 'Day'$Day'-2.c'
+curl --cookie "session=$session"  "https://adventofcode.com/2022/day/"$Day"/input" >> input.txt
 
 
 # Setup makefile
 touch $makefile
-echo "CC=CC" >> $makefile
-echo "Day="$Day >> $makefile
-echo 'challenge1=Day$(Day)' >> $makefile
-echo 'challenge2=Day$(Day)' >> $makefile
 
-echo 'commonPath=../Common' >> $makefile
-echo 'common=common.c' >> $makefile
+echo "CC=cc" >> $makefile
+echo "Day=$Day" >> $makefile
+echo 'challenge1=Day$(Day)
+challenge2=Day$(Day)-2
+commonPath=../Common
+common=common
+flags=-Wextra
 
-echo "" $makefile
-echo "all: AOC-challenge1" >> $makefile
-echo "" >> $makefile
+all: AOC-challenge2
+	$(CC) -o AOC$(Day) *.o
+	chmod +x AOC$(Day)
 
-echo "AOC-challenge1:" >> $makefile 
-echo "\t"'$(CC) -o AOC$(Day) $(challenge1).c $(commonPath)/$(common)' >> $makefile
-echo "" >> $makefile
+AOC-challenge1: $(challenge1).c common
+	$(CC) -c $(challenge1).c $(flags)
 
-echo "AOC-challenge2:" >> $makefile
-echo "\t"'$(CC) -o AOC$(Day) $(challenge2).c $(commonPath)/$(common)' >> $makefile
-echo "" >> $makefile
+AOC-challenge2: $(challenge1)-2.c common
+	$(CC) -c $(challenge2).c $(flags)
 
-echo "clean:" >> $makefile
-echo "\t""rm *.o" >> $makefile
+common: $(commonPath)/$(common).c $(commonPath)/$(common).h
+	$(CC) -c $(commonPath)/$(common).c
+
+clean:
+	rm *.o
+	rm AOC$(Day)
+
+run:
+	./AOC$(Day)' >> $makefile
 
 # Create text files
 touch testInput.txt
