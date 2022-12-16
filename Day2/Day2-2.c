@@ -17,7 +17,7 @@
 
 
 // Defines
-#if (1)
+#if (0)
     #define INPUT_FILE "testInput.txt"
 #else
     #define INPUT_FILE "input.txt"
@@ -54,8 +54,6 @@ int main(void)
         // Extract player's choices
         plays(line, moves, LINE_BUFFER, 2 * sizeof(char));
 
-        printf("Play 1:'%c' \t Play2:'%c' \n", moves[0], moves[1]);
-        
         // Change our move based on if we should win, lose or tie
         moves[1] = game_state(moves[0], moves[1]);
 
@@ -65,8 +63,6 @@ int main(void)
         // Calculate our rps score
         // (rock - 1, paper - 2, scissors -3)
         move_value = play_val(moves[1]);
-
-        printf("GameVal: %i\tMoveVal: %i\n",game_result_value, move_value);
 
         // sum results and store in list
         games = realloc(games, ((size_t)count + 1) * sizeof(games[0]));
