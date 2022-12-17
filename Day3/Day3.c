@@ -12,7 +12,7 @@
 
 
 // Defines
-#if (1)
+#if (0)
     #define INPUT_FILE "testInput.txt"
 #else
     #define INPUT_FILE "input.txt"
