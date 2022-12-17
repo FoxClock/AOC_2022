@@ -6,7 +6,7 @@ commonPath=../Common
 common=common
 flags=-Wextra
 
-all: AOC-challenge2
+all: AOC-challenge1
 	$(CC) -o AOC$(Day) *.o
 	chmod +x AOC$(Day)
 
