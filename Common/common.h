@@ -8,12 +8,22 @@
 // Defines
 
 // Structs
-/* Could be used to track a file for input */
-struct File
-{
-    /* data */
-} File;
+/* Linked list structure */
 
+// Struct to represent a node
+struct node
+{
+    int data;
+    struct node *next;
+} node;
+
+// Struct to represent a list
+struct linked_list
+{
+    struct node *start;
+} linked_list;
+
+/* ========================== */
 
 // Function Definitions
 FILE* open_file(char* filepath, char* mode);
@@ -21,3 +31,13 @@ char  *get_string_contents(FILE *input_file);
 size_t reallocate_array(int **starting_array, size_t inital_size, size_t amount);
 void printVals(int array[], size_t length);
 void bubbleSort(int array[], int size);
+
+
+/* Linked list functions */
+void init_list(struct linked_list new_list);
+void push(struct linked_list *list, int data);
+void delete(struct linked_list *list, size_t index);
+int count_list(struct linked_list *list);
+void pop(struct linked_list *list);
+int free_list(struct linked_list *list);
+/* ================================================== */

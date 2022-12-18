@@ -33,6 +33,15 @@ FILE* open_file(char* filepath, char* mode) {
     return file;
 }
 
+/*
+    Takes in a file pointer, then returns a string of all the items
+
+    Parameters:
+        FILE *input_file: file pointer to the input file.
+
+    Returns:
+        char *file_contents: heap array to containing the contents of the file.
+*/
 char  *get_string_contents(FILE *input_file) {
     // Find size of file
     fseek(input_file, 0L, SEEK_END);
@@ -109,3 +118,135 @@ void bubbleSort(int array[], int size) {
     }
   }
 }
+
+
+/* =================================================== */
+/* ------------------- Linked List ------------------- */
+/* --- Functions for handling linked list elements --- */
+
+
+/* Initialises a list object */
+void init_list(struct linked_list new_list)
+{
+    new_list.start = NULL;
+}
+
+/* Push an item to the top of the list */
+void push(struct linked_list *list, int data)
+{
+    // Check if list is specified
+    if (!list)
+    {
+        printf("No parent list specified for node\n");
+        return;
+    }
+
+    // Create new node and allocate memory on heap
+    struct node *n;
+    n = malloc(sizeof(struct node));
+    
+    /* Set values */
+    n->data = data;             // Allocate data into data variable
+    n->next = list->start;      // set next pointer to the start pointer position
+    list->start = n;            // Set the list struct start pos to the current node
+
+    // finish function and return
+    return;
+}
+
+/* Remove an item from within the list */
+void delete(struct linked_list *list, size_t index)
+{
+    // Variables
+    int count = 0;
+    size_t list_leng = (size_t)count_list(list);
+    struct node *note_to_delete;
+    struct node *next_item;
+
+    // Determine if index is inside of list
+    if (!(index > 0 && index < list_leng))
+    {
+        printf("CANNOT DELETE!\n Item is outside of list range!\n");
+        printf("Index: %zu -- List length: %zu\n\n", index, list_leng);
+
+        return;
+    }
+
+    // Get the node at the index
+    note_to_delete = list->start;
+    while (note_to_delete != NULL && count <= index)
+    {
+        note_to_delete = note_to_delete->next;
+        count++;
+    }
+
+    // Take current node's next
+    // TODO: Take current item and remove it
+    //      then take the previous item in the list
+    //      and change the next value to the deleted item's
+    //      next value. 
+
+    return;
+}
+
+int count_list(struct linked_list *list)
+{
+    // Variables
+    int count = 0;
+
+    // Get head of list
+    struct node *current = list->start;
+
+    // While the currently examined item is not null, increment count
+    // and assign the next value to the current pointer
+    while (current != NULL)
+    {
+        count++;
+        current = current->next;
+    }
+
+    return count;
+}
+
+/* Remove an item from the list */
+void pop(struct linked_list *list)
+{
+    // Variables
+    /* Take the head of the list's node*/
+    struct node *node_to_remove = list->start;
+    /* Take the had of the list's next item*/
+    struct node *node_to_relink = list->start->next;
+
+
+    // Assign the node to relink to the list start
+    list->start = node_to_relink;
+
+    // Free the node to remove
+    free(node_to_remove);
+
+    // Close function
+    return;
+}
+
+/* Delete all the items in the list */
+int free_list(struct linked_list *list)
+{
+    // Variables
+
+    // whenever the head of the list is not null
+    // iterate through the list and free the nodes.
+    while (list->start != NULL)
+    {
+        struct node *n = list->start;
+        list->start = list->start->next;
+        free(n);
+    }
+
+    // Free the head of the list
+    free(list);
+
+    // Report success
+    return 1;
+}
+
+/* =================================================== */
