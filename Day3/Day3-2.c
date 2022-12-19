@@ -43,7 +43,7 @@
 
 /* Function Definitions */
 void clean_input(const char *input, char *output, size_t length);
-char find_duplicate(char *array1, char *array2, size_t leng);
+char find_duplicate(char *input_array, size_t leng);
 int get_index(char *array1, char *array2, size_t length);
 int letter_to_score(char letter);
 /*=====================*/
@@ -68,30 +68,15 @@ int main()
         // minus the /n character a the end of the line
         clean_input(line, contents, line_len);
 
-        // Find the half size of the cleaned input
-        size_t contents_length = strnlen(contents, line_len);
-        size_t half_length = (contents_length / 2);
+        /* 
+            get 3 lines of input and concatenate into one 
+            single array.
+            This will then be linearly checked for triplets of 
+            letters, which will indicate the badge of the elf.
+        */
         
-        /* Diagnostic print the contents of the array */
-        // printf("Contents: %s\n", contents);
-        /*============================================*/
-
-        // dimension two arrays for compartments
-        size_t mal_size = (half_length + 1) * sizeof(char);
-        char *compartment1 = malloc(mal_size);
-        char *compartment2 = malloc(mal_size);
-       
-        // Copy contents to the new arrays
-        strlcpy(compartment1, contents, half_length + 1);
-        strlcpy(compartment2, &contents[half_length], half_length + 1);
-        // ===============================
-
-        // Diagnostics for two array halves
-        // printf("C1: %s\n", compartment1);
-        // printf("C2: %s\n", compartment2);
-        /*================================*/
         
-        // Find duplicate character in array
+        // Find triplet character in array
         letter = find_duplicate(compartment1, compartment2, half_length);
 
         // Verify letter is not zero
@@ -158,7 +143,12 @@ int main()
     return 0;
 }
 
-char find_duplicate(char *array1, char *array2, size_t leng)
+
+/*
+    Take an input array, and find which character is repeated
+    three times in the array.
+*/
+char find_duplicate(char *input_array, size_t leng)
 {
     // variables
     int index = -1;
@@ -179,6 +169,10 @@ char find_duplicate(char *array1, char *array2, size_t leng)
     return letter;
 }
 
+/*
+    Return the index of the first letter to have 3 
+    identical letters also present in the array
+*/
 int get_index(char *array1, char *array2, size_t length)
 {
     int index;      // Index of character
