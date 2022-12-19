@@ -1,5 +1,5 @@
 CC=cc
-Day=3
+Day=4
 challenge1=Day$(Day)
 challenge2=Day$(Day)-2
 commonPath=../Common
