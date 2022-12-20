@@ -119,6 +119,49 @@ void bubbleSort(int array[], int size) {
   }
 }
 
+/*
+    Returns an char *array up to a separator or to a null terminator.
+
+    Inputs:
+        char *input_array:  Input array to be split
+        char * ouput:       output the 
+        size_t length:      Length of the input array
+        char sep:           character to separate from
+*/
+
+int split_string(char *input_array, char *out1, char *out2, size_t leng, char sep)
+{
+    // Variables
+    size_t arr_size = 0;
+    int count = 0;
+
+    //iterate through input array
+    while (input_array[count] && count < leng)
+    {
+        if (input_array[count] == sep)
+        {
+            // Get size of inital array
+            arr_size = (size_t)count;
+
+            // Copy the text into the output array
+            // Verify that the string copied successfully
+            int n = strlcpy(out1, input_array, arr_size);
+            if (n < (int)arr_size)
+            {
+                printf("Error copying string!\n");
+                exit(1);
+            }
+
+            // Stop the loop
+            break;
+        }
+
+        // Return the length of the output array
+        return (int)arr_size;
+    }
+}
+
+
 
 /* =================================================== */
 /* ------------------- Linked List ------------------- */

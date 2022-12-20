@@ -17,9 +17,33 @@
     #define INPUT_FILE "input.txt"
 #endif
 
+#define LINE_BUFFER 10
+
 /* Main function */
 int main()
 {
-    // Code goes here:
+    // Constants
+    char sep = ',';
+    char grid_sep = '-';
+
+    // variables
+    FILE *fptr = open_file(INPUT_FILE, "r");
+    char *line = malloc(LINE_BUFFER * sizeof(char));
+
+    // Get a line
+    while (fgets(line,10, fptr))
+    {
+        char *grid1, *grid2;
+
+        // Malloc lines
+
+
+        // Parse line along csv
+
+    }
+
+    // Free allocated memory and pointers
+    free(line);
+    fclose(fptr);
 }
 
