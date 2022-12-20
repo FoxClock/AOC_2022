@@ -95,7 +95,6 @@ void printVals(int array[], size_t length)
     }
 }
 
-
 // Bubble sort values
 // Sorts the integer values in an array
 void bubbleSort(int array[], int size) {
@@ -129,36 +128,47 @@ void bubbleSort(int array[], int size) {
         char sep:           character to separate from
 */
 
-int split_string(char *input_array, char *out1, char *out2, size_t leng, char sep)
+int split_string(char *input_array, char *out, size_t leng, char sep)
 {
     // Variables
     size_t arr_size = 0;
     int count = 0;
 
+    // Make copy of the input array
+    char input_copy[leng];
+    strcpy(input_copy, input_array);
+
     //iterate through input array
-    while (input_array[count] && count < leng)
+    while (count < leng)
     {
-        if (input_array[count] == sep)
+        if (input_copy[count] == '\0'               // If null terminator
+        || input_copy[count] == sep                 // If separator value
+        || input_copy[count] == '\n')               // If newline character
         {
             // Get size of inital array
             arr_size = (size_t)count;
 
-            // Copy the text into the output array
-            // Verify that the string copied successfully
-            int n = strlcpy(out1, input_array, arr_size);
-            if (n < (int)arr_size)
-            {
-                printf("Error copying string!\n");
-                exit(1);
-            }
+            // Insert null character at separator position
+            input_copy[count] = '\0';
 
             // Stop the loop
             break;
         }
-
-        // Return the length of the output array
-        return (int)arr_size;
+        // Increment count
+        count++;
     }
+
+    // Copy the text into the output array
+    // Verify that the string copied successfully
+    int n = strlcpy(out, input_copy, leng);
+    if (n < (int)arr_size)
+    {
+        printf("Error copying string!\n");
+        exit(1);
+    }
+
+    // Return the length of the output array
+    return (int)arr_size;
 }
 
 

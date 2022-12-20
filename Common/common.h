@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <string>
+#include <string.h>
 
 // Defines
 
@@ -33,7 +33,7 @@ char  *get_string_contents(FILE *input_file);
 size_t reallocate_array(int **starting_array, size_t inital_size, size_t amount);
 void printVals(int array[], size_t length);
 void bubbleSort(int array[], int size);
-
+int split_string(char *input_array, char *out, size_t leng, char sep);
 
 /* Linked list functions */
 void init_list(struct linked_list new_list);
