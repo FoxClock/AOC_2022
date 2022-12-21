@@ -25,6 +25,7 @@
 /* ======== Functions ============= */
 int *create_numberArray(char *input, size_t input_length);
 int parse_number(char *input, size_t length);
+int array_encompassed(int *array1, int *array2, size_t array_length);
 /* -------------------------------- */
 
 /* Main function */
@@ -68,14 +69,16 @@ int main()
 
         // Print the number array
         int flag = 0;
-        for (int j = 0; j < 1000; ++j)
+        
+        // Check if overlap is found
+        flag = array_encompassed(val_array1, val_array2, 1000);
+
+        if (flag > 0)
         {
-            if (val_array1[j] != 0 && val_array2[j] != 0)
-            {
-                flag = 1;
-            }
+            printf("overlap: True\n");
+        } else {
+            printf("overlap: False\n");
         }
-        printf("overlap: %i", flag);
         printf("\n");
 
         // Free memory
@@ -150,8 +153,9 @@ int parse_number(char *input, size_t length)
     return output;
 }
 
-int array_encompassed(int *array1, int array2, size_t array_length)
+int array_encompassed(int *array1, int *array2, size_t array_length)
 {
+
     /*
         Problem to solve:
             Each array contains a list of values
@@ -171,7 +175,26 @@ int array_encompassed(int *array1, int array2, size_t array_length)
    // Variables
    int flag = 0;
 
+   // Brute force
+   for (int i = 0; i < (int)array_length; i++)
+   {
+    int count = 0;
+    for (int j = 0; j < (int)array_length; j++)
+    {
+        count++ ;
+        if (array1[i] == array2[j])
+        {
+            break;
+        }
+    }
+    if (count == (int)array_length)
+    {
+        return -1;
+    }
+   }
+   
 
     // Return the flag
    return flag;
 }
+
