@@ -23,8 +23,8 @@
 /* -------------------------------- */
 
 /* ======== Functions ============= */
-int *create_numberArray(const char *input, size_t input_length);
-
+int *create_numberArray(char *input, size_t input_length);
+int parse_number(char *input, size_t length);
 /* -------------------------------- */
 
 /* Main function */
@@ -37,6 +37,7 @@ int main()
     // variables
     FILE *fptr = open_file(INPUT_FILE, "r");
     char *line = malloc(LINE_BUFFER * sizeof(char));
+    size_t overlap_count = 0;
 
 
     // Get a line
@@ -62,9 +63,24 @@ int main()
         printf("Grid 2 contents: %s\n", grid2);
 
         // Get val1 and val 2
-        int *val_array1 = create_numberArray(grid1);
+        int *val_array1 = create_numberArray(grid1, n);
+        int *val_array2 = create_numberArray(grid2, n);
+
+        // Print the number array
+        int flag = 0;
+        for (int j = 0; j < 1000; ++j)
+        {
+            if (val_array1[j] != 0 && val_array2[j] != 0)
+            {
+                flag = 1;
+            }
+        }
+        printf("overlap: %i", flag);
+        printf("\n");
 
         // Free memory
+        free(val_array1);
+        free(val_array2);
         free(grid1);
         free(grid2);
     }
@@ -74,19 +90,19 @@ int main()
     fclose(fptr);
 }
 
-int *create_numberArray(const char *input, size_t input_length)
+int *create_numberArray(char *input, size_t input_length)
 {
     // Constants
     const int bottom = 0;
     const int top = 1000; 
+    const int Base = 10;
     
 
     // variables 
     int *int_array;
-    char var1[2], var2[2];
     int low = 0, high = 0;
-    int index = 0;
-    char *ptr;
+    char *e;
+    int index;
 
     // Allocate the int array and set all values to zero
     size_t size = top * sizeof(int);
@@ -94,18 +110,68 @@ int *create_numberArray(const char *input, size_t input_length)
     int_array = memset(int_array, 0, top);
 
     // Split input into two separate numbers
-    index = split_string(input, var1, input_length, '-');
-    index = split_string(&input[index + 1], var2, input_length, '-');
+    e = strchr(input, '-');                     // Find the offset of the '-' character
+    index = (int)(e - input);                   // Converting the offset to an int position
+    low = parse_number(input, input_length);
+    high = parse_number(&input[index + 1], input_length);
 
-    // Convert the two strings into numbers
-    low = (int) strtol(var1, &ptr, 10);
-    high = (int) 
-
+    /* Diagnostics print numbers */
+    printf("Num1 = %i\n", low);
+    printf("Num = %i\n", high);
 
     // From the first integer to the last
     // add that number to the array
+    for (int i = 0; i <= top; ++i)
+    {
+        if (i >= low && i <= high)
+        {
+            int_array[i] = i;
+        }
+    }
 
-
+    return int_array;
 }
 
+int parse_number(char *input, size_t length)
+{
+    // Constants
+    const int BASE = 10;
 
+    // Variables
+    int output = 0;
+    int index = 0;
+    char *ptr;
+    char *var = malloc(length * sizeof(char));
+
+    index = split_string(input, var, length, '-');
+
+    output = (int) strtol(var, &ptr, 10);
+
+    return output;
+}
+
+int array_encompassed(int *array1, int array2, size_t array_length)
+{
+    /*
+        Problem to solve:
+            Each array contains a list of values
+            which can either be a part of the 
+            other array or not.
+
+            This function needs to find if a set of values
+            is encompassed by the other array.
+            So if all values of one array, is encompassed
+            by the values of the other array, it should 
+            return true.
+    */
+
+   // Constants
+
+
+   // Variables
+   int flag = 0;
+
+
+    // Return the flag
+   return flag;
+}
