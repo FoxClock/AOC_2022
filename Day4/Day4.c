@@ -25,7 +25,7 @@
 /* ======== Functions ============= */
 int *create_numberArray(char *input, size_t input_length);
 int parse_number(char *input, size_t length);
-int array_encompassed(int *array1, int *array2, size_t array_length);
+int array_encompassed(int *array1, int *array2, size_t array1_length, size_t array2_length);
 /* -------------------------------- */
 
 /* Main function */
@@ -44,7 +44,10 @@ int main()
     // Get a line
     while (fgets(line, LINE_BUFFER, fptr))
     {
+        // Variables
+        int flag = 0;
         char *grid1, *grid2;
+        size_t array1_size, array2_size;
 
         // Malloc grids
         size_t grid_size = GRIDSIZE_BUFFER * sizeof(char);
@@ -67,11 +70,15 @@ int main()
         int *val_array1 = create_numberArray(grid1, n);
         int *val_array2 = create_numberArray(grid2, n);
 
-        // Print the number array
-        int flag = 0;
+        array1_size = sizeof(val_array1) * sizeof(val_array1[0]);
+
+        // Diagnostic print of array sizes
+        printf("Array1 size: %zu\n", array1_size);
+        printf("Array2 size: %zu\n", array2_size);
+        
         
         // Check if overlap is found
-        flag = array_encompassed(val_array1, val_array2, 1000);
+        flag = array_encompassed(val_array1, val_array2, array1_size, array2_size);
 
         if (flag > 0)
         {
@@ -97,20 +104,16 @@ int *create_numberArray(char *input, size_t input_length)
 {
     // Constants
     const int bottom = 0;
-    const int top = 1000; 
     const int Base = 10;
     
 
     // variables 
     int *int_array;
+    int array_size = 0;
     int low = 0, high = 0;
     char *e;
     int index;
 
-    // Allocate the int array and set all values to zero
-    size_t size = top * sizeof(int);
-    int_array = malloc(size);
-    int_array = memset(int_array, 0, top);
 
     // Split input into two separate numbers
     e = strchr(input, '-');                     // Find the offset of the '-' character
@@ -118,13 +121,22 @@ int *create_numberArray(char *input, size_t input_length)
     low = parse_number(input, input_length);
     high = parse_number(&input[index + 1], input_length);
 
+    // get the size of the array
+    array_size = high - low;
+    
+    // Allocate the int array and set all values to zero
+    size_t size = array_size * sizeof(int);
+    int_array = malloc(size);
+    int_array = memset(int_array, 0, array_size);
+
     /* Diagnostics print numbers */
     printf("Num1 = %i\n", low);
-    printf("Num = %i\n", high);
+    printf("Num2 = %i\n", high);
+    printf("Array size: %i\n", array_size);
 
     // From the first integer to the last
     // add that number to the array
-    for (int i = 0; i <= top; ++i)
+    for (int i = 0; i <= array_size; ++i)
     {
         if (i >= low && i <= high)
         {
@@ -153,7 +165,7 @@ int parse_number(char *input, size_t length)
     return output;
 }
 
-int array_encompassed(int *array1, int *array2, size_t array_length)
+int array_encompassed(int *array1, int *array2, size_t array1_length, size_t array2_length)
 {
 
     /*
@@ -173,21 +185,19 @@ int array_encompassed(int *array1, int *array2, size_t array_length)
 
 
    // Variables
-   int flag = 0;
+   int i, j;
 
    // Brute force
-   for (int i = 0; i < (int)array_length; i++)
+   for (i = 0; i < (int)array2_length; i++)
    {
-    int count = 0;
-    for (int j = 0; j < (int)array_length; j++)
+    for (j = 0; j < (int)array1_length; j++)
     {
-        count++ ;
-        if (array1[i] == array2[j])
+        if (array2[i] == array1[j])
         {
             break;
         }
     }
-    if (count == (int)array_length)
+    if (j == (int)array1_length)
     {
         return -1;
     }
@@ -195,6 +205,6 @@ int array_encompassed(int *array1, int *array2, size_t array_length)
    
 
     // Return the flag
-   return flag;
+   return 1;
 }
 
