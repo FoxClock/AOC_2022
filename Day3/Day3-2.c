@@ -1,3 +1,22 @@
+    // AUTHOR:	Hayden Foxwell
+    // DATE:	16-12-2022
+    // PURPOSE:	Day 3 -
+    // Imports
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+
+    #include "../Common/common.h"
+
+
+    // Defines
+    #if (1)
+        #define INPUT_FILE "testInput.txt"
+    #else
+        #define INPUT_FILE "input.txt"
+    #endif
+    
+
 // AUTHOR:	Hayden Foxwell
 // DATE:	16-12-2022
 // PURPOSE:	Day 3 -
@@ -11,7 +30,7 @@
 
 
 // Defines
-#if (1)
+#if (0)
     #define INPUT_FILE "testInput.txt"
 #else
     #define INPUT_FILE "input.txt"
@@ -23,11 +42,9 @@
 
 /* Function Definitions */
 void clean_input(const char *input, char *output, size_t length);
-char find_duplicate(char *input_array, size_t leng);
-int get_index(char *array, size_t length);
+char find_duplicate(char *array1, char *array2, size_t leng);
+int get_index(char *array1, char *array2, size_t length);
 int letter_to_score(char letter);
-void reallocate_score_array(int *score_array, int count);
-void sum_score_array(int *score_array, size_t array_length);
 /*=====================*/
 
 /* Main function*/
@@ -39,63 +56,98 @@ int main()
     int *score_array = malloc(1 * sizeof(int));
     char letter = 0;
 
-    int count = 0, line_count = 0;
+    int count = 0;
     while (fgets(line, LINE_BUFFER, fptr))
     {
-        // Create cumulative array
-        size_t cumulative_size = 1;
-        char *cumulative_array = malloc(cumulative_size * sizeof(char));
+        // Allocate cleaned contents array
+        size_t line_len = strlen(line);
+        char *contents = malloc(line_len * sizeof(char));
 
-        // Get size of line
-        size_t line_size = strlen(line);
+        // copy the line into the contents array
+        // minus the /n character a the end of the line
+        clean_input(line, contents, line_len);
 
-        // on every third line, process the cumulative array
-        if (count % 3 == 0 && count != 0)
+        // Find the half size of the cleaned input
+        size_t contents_length = strnlen(contents, line_len);
+        size_t half_length = (contents_length / 2);
+        
+        /* Diagnostic print the contents of the array */
+        // printf("Contents: %s\n", contents);
+        /*============================================*/
+
+        // dimension two arrays for compartments
+        size_t mal_size = (half_length + 1) * sizeof(char);
+        char *compartment1 = malloc(mal_size);
+        char *compartment2 = malloc(mal_size);
+       
+        // Copy contents to the new arrays
+        strlcpy(compartment1, contents, half_length + 1);
+        strlcpy(compartment2, &contents[half_length], half_length + 1);
+        // ===============================
+
+        // Diagnostics for two array halves
+        // printf("C1: %s\n", compartment1);
+        // printf("C2: %s\n", compartment2);
+        /*================================*/
+        
+        // Find duplicate character in array
+        letter = find_duplicate(compartment1, compartment2, half_length);
+
+        // Verify letter is not zero
+        if (!letter)
         {
-            printf("Cumulative array conts: %s\n", cumulative_array);
+            printf("Failure to find character.\n");
 
-            count = 0;
+            // Free loop mallocs
+            free(compartment1);
+            free(compartment2);
+            free(contents);
 
-            // Testing
-            free(cumulative_array);
+            // Skip loop
+            continue;
+
+        } else {
+            printf("Letter found: '%c'\n", letter);
         }
-        // Otherwise, append to cumulative array
-        else 
+
+        // Get score value for letter
+        /* 
+            Lower case scores: 1 -> 26 
+            Uppercase scores: 27 -> 52
+        */
+        int score = letter_to_score(letter);
+
+        // Diagnostic, Print score
+        printf("Score: %i\n", score);
+        // =======================
+
+        // Assign value to array of scores
+        size_t array_size = (sizeof(*score_array)) + (count * sizeof(int));
+        score_array = realloc(score_array, array_size);
+        score_array[count] = score;
+
+        if (!score_array)
         {
-            printf("Count: %i\n", count);
-            // realloc the cumulative array
-            // sum the size of the cumulative array and 
-            // the line_size, then realloc that size
-            cumulative_size += line_size;
-            cumulative_array = realloc(cumulative_array, cumulative_size * sizeof(cumulative_array[0]));
-
-            // Concatenate the string to the end of the array
-            strlcat(cumulative_array, line, line_size);
+            printf("Issue with realloc\n");
         }
 
-        // update the counter
-        count ++;
-        line_count ++;
+        // Increment counter
+        count++;
+
+        // Free loop mallocs
+        free(compartment1);
+        free(compartment2);
+        free(contents);
     }
-    // Get score value for letter
-    /* 
-        Lower case scores: 1 -> 26 
-        Uppercase scores: 27 -> 52
-    */
-    int score = letter_to_score(letter);
 
-    // Diagnostic, Print score
-    printf("Score: %i\n", score);
-    // =======================
-
-    // Reallocate the score array
-    reallocate_score_array(score_array, count);
-
-    // Assign value to score array
-    score_array[count] = score;
-
-    // Sum the scores in the score array
-    sum_score_array(score_array, count);
+    // Sum the array of scores and print
+    int sum = 0;
+    for (int x = 0; x < count; ++x)
+    {
+        sum += score_array[x];
+    }
+    printf("Final Score: %i\n", sum);
+    printf("\n");
 
     // Free memory
     free(line);
@@ -105,63 +157,17 @@ int main()
     return 0;
 }
 
-/* Support functions */
-/* ================= */
-
-/*
-    Resizes the score array for each score.
-*/
-void reallocate_score_array(int *score_array, int count)
-{
-    // Assign value to array of scores
-    size_t array_size = (sizeof(*score_array)) + (count * sizeof(int));
-    score_array = realloc(score_array, array_size);
-
-    if (!score_array)
-    {
-        printf("Issue with realloc\n");
-        exit(1);
-    }
-
-}
-
-/*
-    Sums the contents of the score array.
-*/
-void sum_score_array(int *score_array, size_t array_length)
-{
-    // Variables
-    int sum = 0;
-    
-    // For each item in the score array, sum the value
-    for (int x = 0; x < (int)array_length; ++x)
-    {
-        // Total the scores
-        sum += score_array[x];
-    }
-
-    // Print to stdout the totaled score
-    printf("Final Score: %i\n", sum);
-    printf("\n");
-    
-    return;
-}
-
-/*
-    Take an input array, and find which character is repeated
-    three times in the array.
-*/
-char find_duplicate(char *input_array, size_t leng)
+char find_duplicate(char *array1, char *array2, size_t leng)
 {
     // variables
     int index = -1;
     char letter = 0;
 
     // get index of duplicate
-    index = get_index(input_array, leng);
+    index = get_index(array1, array2, leng);
 
     // Get letter from array
-    letter = input_array[index];
+    letter = array1[index];
 
     if (!letter)
     {
@@ -172,11 +178,7 @@ char find_duplicate(char *input_array, size_t leng)
     return letter;
 }
 
-/*
-    Return the index of the first letter to have 3 
-    identical letters also present in the array
-*/
-int get_index(char *array, size_t length)
+int get_index(char *array1, char *array2, size_t length)
 {
     int index;      // Index of character
     uint8_t flag = 0;
@@ -191,7 +193,7 @@ int get_index(char *array, size_t length)
         for (int j = 0; j < (int)length; ++j)
         {
             // If letters are the same, break loops
-            if (array[i] == array[j])
+            if (array1[i] == array2[j])
             {
                 flag = 1;
             }
@@ -213,11 +215,6 @@ void clean_input(const char *input, char *output, size_t length)
     strlcpy(output, input, length);
 }
 
-/* Converts a char intput to the puzzle score.*/
-/*
-    lowercase  => 1 - 26
-    Uppercase  => 27 - 52
-*/
 int letter_to_score(char letter)
 {
     // Constants
