@@ -96,7 +96,10 @@ int main()
 
         if (flag > 0)
         {
+            // Print overlap count true
+            // and increment overlap counter
             printf("overlap: True\n");
+            overlap_count += 1;
         } else {
             printf("overlap: False\n");
         }
@@ -108,6 +111,9 @@ int main()
         free(grid1);
         free(grid2);
     }
+
+    // Print output
+    printf("\n\nNum of overlaps: %zu\n", overlap_count);
 
     // Free allocated memory and pointers
     free(line);
