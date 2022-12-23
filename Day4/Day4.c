@@ -26,6 +26,8 @@
 int *create_numberArray(char *input, size_t input_length);
 int parse_number(char *input, size_t length);
 int array_encompassed(int *array1, int *array2, size_t array1_length, size_t array2_length);
+int *low_high(char *input, size_t input_length);
+size_t array_size(char *input, size_t input_length);
 /* -------------------------------- */
 
 /* Main function */
@@ -54,6 +56,7 @@ int main()
         grid1 = malloc(grid_size);
         grid2 = malloc(grid_size);
 
+
         // Parse line along csv
         int n = split_string(line, grid1, LINE_BUFFER, ',');
         n = split_string(&line[n + 1], grid2, LINE_BUFFER, ',');
@@ -61,6 +64,10 @@ int main()
         {
             printf("could not parse string\n");
         }
+
+        // Pre-determine the number of values in the array
+        array1_size = array_size(grid1, grid_size);
+        array2_size = array_size(grid2, grid_size);
 
         // Diagnostic - Print grid 1 contents
         printf("Grid 1 contents: %s\n", grid1);
@@ -70,15 +77,22 @@ int main()
         int *val_array1 = create_numberArray(grid1, n);
         int *val_array2 = create_numberArray(grid2, n);
 
-        array1_size = sizeof(val_array1) * sizeof(val_array1[0]);
 
         // Diagnostic print of array sizes
-        printf("Array1 size: %zu\n", array1_size);
-        printf("Array2 size: %zu\n", array2_size);
+        // printf("Array1 size: %zu\n", array1_size);
+        // printf("Array2 size: %zu\n", array2_size);
         
         
-        // Check if overlap is found
-        flag = array_encompassed(val_array1, val_array2, array1_size, array2_size);
+        // check which array is shorter, to find which
+        // way to check the subset, as array_encompassed
+        // checks if the second array is a subset of the first
+        if ( array1_size > array2_size)
+        {
+            // Check for subset
+            flag = array_encompassed(val_array1, val_array2, array1_size, array2_size);
+        } else {
+            flag = array_encompassed(val_array2, val_array1, array2_size, array1_size);
+        }
 
         if (flag > 0)
         {
@@ -100,6 +114,34 @@ int main()
     fclose(fptr);
 }
 
+size_t array_size(char *input, size_t input_length)
+{
+    // get array 
+    int * arr = low_high(input, input_length);
+
+    // Return high - low + 1 to give true length
+    int val = (arr[1] - arr[0]) + 1;
+
+    // Free memory and return
+    free(arr);
+    return val;
+}
+
+int *low_high(char *input, size_t input_length)
+{
+    char *e;
+    int index;
+    int *low_high_array = malloc(2 * sizeof(int));
+
+    // Split input into two separate numbers
+    e = strchr(input, '-');                     // Find the offset of the '-' character
+    index = (int)(e - input);                   // Converting the offset to an int position
+    low_high_array[0] = parse_number(input, input_length);
+    low_high_array[1] = parse_number(&input[index + 1], input_length);
+
+    return low_high_array;
+}
+
 int *create_numberArray(char *input, size_t input_length)
 {
     // Constants
@@ -109,36 +151,28 @@ int *create_numberArray(char *input, size_t input_length)
 
     // variables 
     int *int_array;
-    int array_size = 0;
-    int low = 0, high = 0;
-    char *e;
-    int index;
-
-
-    // Split input into two separate numbers
-    e = strchr(input, '-');                     // Find the offset of the '-' character
-    index = (int)(e - input);                   // Converting the offset to an int position
-    low = parse_number(input, input_length);
-    high = parse_number(&input[index + 1], input_length);
+    int arr_size = 0;
+    
+    int *high_low_arr = low_high(input, input_length);
 
     // get the size of the array
-    array_size = high - low;
+    arr_size = array_size(input, input_length);
     
     // Allocate the int array and set all values to zero
-    size_t size = array_size * sizeof(int);
+    size_t size = arr_size * sizeof(int);
     int_array = malloc(size);
-    int_array = memset(int_array, 0, array_size);
+    int_array = memset(int_array, 0, arr_size);
 
     /* Diagnostics print numbers */
-    printf("Num1 = %i\n", low);
-    printf("Num2 = %i\n", high);
-    printf("Array size: %i\n", array_size);
+    printf("Num1 = %i\n", high_low_arr[0]);
+    printf("Num2 = %i\n", high_low_arr[1]);
+    printf("Array size: %i\n", arr_size);
 
     // From the first integer to the last
     // add that number to the array
-    for (int i = 0; i <= array_size; ++i)
+    for (int i = 0; i <= arr_size; ++i)
     {
-        if (i >= low && i <= high)
+        if (i >= high_low_arr[0] && i <= high_low_arr[1])
         {
             int_array[i] = i;
         }
